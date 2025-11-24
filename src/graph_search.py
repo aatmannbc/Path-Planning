@@ -48,8 +48,38 @@ def breadth_first_search(graph, start, goal):
     graph.init_graph()  # Make sure all the node values are reset.
 
     """TODO (P3): Implement BFS."""
+    from collections import deque
 
-    # If no path was found, return an empty list.
+    queue = deque([start])
+    start_node = graph.nodes[start.j][start.i]
+    start_node.visited = True
+    start_node.distance = 0
+    
+ 
+    graph.visited_cells.append(Cell(start.i, start.j))
+    
+    
+    while queue:
+        current = queue.popleft()
+        current_node = graph.nodes[current.j][current.i]
+        
+        if current.i == goal.i and current.j == goal.j:
+            return trace_path(current, graph)
+        
+        neighbors = graph.find_neighbors(current.i, current.j)
+        for neighbor in neighbors:
+            neighbor_node = graph.nodes[neighbor.j][neighbor.i]
+     
+            if neighbor_node.visited or graph.check_collision(neighbor.i, neighbor.j):
+                continue
+       
+            neighbor_node.visited = True
+            neighbor_node.parent = current_node
+            neighbor_node.distance = current_node.distance + 1
+            
+            queue.append(neighbor)
+            graph.visited_cells.append(Cell(neighbor.i, neighbor.j))
+
     return []
 
 

@@ -11,6 +11,15 @@ class Cell(object):
 """TODO: You may consider defining a class to store your node data. If so, do
 that here."""
 
+class Node:
+    """Class to store node data for graph search."""
+    def __init__(self, i, j):
+        self.i = i
+        self.j = j
+        self.parent = None
+        self.distance = float('inf')
+        self.visited = False
+
 
 class GridGraph:
     """Helper class to represent an occupancy grid map as a graph."""
@@ -46,6 +55,7 @@ class GridGraph:
         self.visited_cells = []  # Stores which cells have been visited in order for visualization.
 
         # TODO: Define any additional member variables to store node data.
+        self.nodes = None  # Will store a 2D array of Node objects
 
     def as_string(self):
         """Returns the map data as a string for visualization."""
@@ -155,6 +165,9 @@ class GridGraph:
         None if the node has no parent. This function is used to trace back the
         path after graph search."""
         # TODO (P3): Return the parent of the node at the cell.
+        node = self.nodes[cell.j][cell.i]
+        if node.parent is not None:
+            return Cell(node.parent.i, node.parent.j)
         return None
 
     def init_graph(self):
@@ -167,6 +180,7 @@ class GridGraph:
         self.visited_cells = []  # Reset visited cells for visualization.
 
         # TODO (P3): Initialize your graph nodes.
+        self.nodes = [[Node(i, j) for i in range(self.width)] for j in range(self.height)]
 
     def find_neighbors(self, i, j):
         """Returns a list of the neighbors of the given cell. This should not
@@ -177,4 +191,10 @@ class GridGraph:
         # bounds of the graph.
 
         # HINT: The function is_cell_in_bounds() might come in handy.
+        # Check all 4-connected neighbors (up, down, left, right)
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        for di, dj in directions:
+            ni, nj = i + di, j + dj
+            if self.is_cell_in_bounds(ni, nj):
+                nbrs.append(Cell(ni, nj))
         return nbrs
